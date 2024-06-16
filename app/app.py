@@ -75,11 +75,11 @@ def submit(request: Request, books: str = Form(...)):
 
 
 
-@app.get("/show_books/")
-def show_books(suggested_books: str):
+@app.get("/show_books/", response_class=HTMLResponse)
+def show_books(request: Request, suggested_books: str):
     suggested_books_list = suggested_books.split(',')
-        
-    return {"suggested_books": suggested_books_list}
+
+    return templates.TemplateResponse("show_books.html", {"request": request, "suggested_books": suggested_books_list})
 
     
     

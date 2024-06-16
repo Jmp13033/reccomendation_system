@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/books.css">
+    <title>Document</title>
+</head>
+<body>
+    <div class="container">
+        <h1>Suggested Books</h1>
+        {% for book in suggested_books %}
+            <div class="book">
+                <h2>{{ book }}</h2>
+            </div>
+        {% endfor %}
+    </div>
+</body>
+</html>
+

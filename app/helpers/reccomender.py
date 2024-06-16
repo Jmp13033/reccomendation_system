@@ -37,7 +37,6 @@ def clean_book_titles(book_list):
     return cleaned_books
 
 
-
 def get_book_vectors(df: pd.DataFrame, book_titles: List[str]) -> np.ndarray:
     book_vectors = []
     for title in book_titles:
