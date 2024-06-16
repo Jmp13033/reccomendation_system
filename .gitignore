@@ -4,3 +4,5 @@ final_df.csv
 csv
 __pycache__
 .env
+
+final_rating_df.csv

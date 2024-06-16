@@ -1,5 +1,6 @@
 from fastapi import FastAPI, Form, Request
 from typing import Annotated
+import re
 from typing import List
 from database import User
 from database import SessionLocal, engine
@@ -13,12 +14,12 @@ from dotenv import load_dotenv , find_dotenv
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 import pickle
+from helpers.reccomender import books_recommendation, get_book_vectors
 # load the enviornment variables
 load_dotenv(find_dotenv())
 
 with open("nearest_neighbors_model.pkl", "rb") as file:
     model = pickle.load(file)
-
 
 
 # instantiate FastAPI
@@ -56,7 +57,20 @@ def user_home(request: Request, email: str, db: Session = Depends(get_db)):
     return templates.TemplateResponse("user_home.html", {"request": request, "user": user})
 
 
+@app.post("/submit_books/", response_class=HTMLResponse)
+def submit(request: Request, books: str = Form(...)):
+    book_list = re.split(r',\s*(?=[^)]*(?:\(|$))', books)
+    print(book_list)
 
+
+
+
+# http://127.0.0.1:8000/user_home?email=jared.peck@uconn.edu
+
+
+
+
+'''
 #--------------------------
 # get all the users
 @app.get("/users/", response_model=List[UserResponse])
@@ -100,5 +114,5 @@ def update_user(user_id: int, user_data: UserCreate, db: Session = Depends(get_d
     db.commit()
     db.refresh(db_user)
     return db_user
-
+'''
 
