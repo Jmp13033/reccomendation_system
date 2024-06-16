@@ -13,6 +13,7 @@ from dotenv import load_dotenv , find_dotenv
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 import pickle
+import uvicorn
 
 from helpers.reccomender import books_recommendation
 
@@ -61,20 +62,10 @@ def user_home(request: Request, email: str, db: Session = Depends(get_db)):
     return templates.TemplateResponse("user_home.html", {"request": request, "user": user})
 
 
-@app.post("/submit_books")
-def submit_books(request:Request, books:str=Form(...)):
-    books = []
-    
     
 
 
 
-
-
-
-
-
-"""
 #--------------------------
 # get all the users
 @app.get("/users/", response_model=List[UserResponse])
@@ -116,5 +107,3 @@ def update_user(user_id: int, user_data: UserCreate, db: Session = Depends(get_d
     db.commit()
     db.refresh(db_user)
     return db_user
-
-"""
