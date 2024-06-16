@@ -22,6 +22,10 @@ with open("nearest_neighbors_model.pkl", "rb") as file:
     model = pickle.load(file)
 
 
+
+
+
+
 # instantiate FastAPI
 app = FastAPI()
 templates = Jinja2Templates(directory="templates")
@@ -57,11 +61,13 @@ def user_home(request: Request, email: str, db: Session = Depends(get_db)):
     return templates.TemplateResponse("user_home.html", {"request": request, "user": user})
 
 
+
+# submit the book to show reccomendations
 @app.post("/submit_books/", response_class=HTMLResponse)
 def submit(request: Request, books: str = Form(...)):
     book_list = re.split(r',\s*(?=[^)]*(?:\(|$))', books)
+    book_list = [book.lower() for book in book_list]
     print(book_list)
-
 
 
 
