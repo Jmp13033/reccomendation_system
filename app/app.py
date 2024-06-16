@@ -14,9 +14,13 @@ from dotenv import load_dotenv , find_dotenv
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 import pickle
-from helpers.reccomender import books_recommendation, get_book_vectors
+from helpers.reccomender import books_recommendation, load_pivot
 # load the enviornment variables
 load_dotenv(find_dotenv())
+
+book_pivot = load_pivot()
+
+
 
 with open("nearest_neighbors_model.pkl", "rb") as file:
     model = pickle.load(file)
@@ -60,14 +64,25 @@ def user_home(request: Request, email: str, db: Session = Depends(get_db)):
     user = db.query(User).filter(User.email == email).first()
     return templates.TemplateResponse("user_home.html", {"request": request, "user": user})
 
-
-
 # submit the book to show reccomendations
 @app.post("/submit_books/", response_class=HTMLResponse)
 def submit(request: Request, books: str = Form(...)):
-    book_list = re.split(r',\s*(?=[^)]*(?:\(|$))', books)
-    book_list = [book.lower() for book in book_list]
-    print(book_list)
+    user_liked_books = re.split(r',\s*(?=[^)]*(?:\(|$))', books)
+    user_liked_books = [book.lower() for book in user_liked_books]
+    suggested_books = books_recommendation(user_liked_books, model, book_pivot, 9)
+    suggested_books = [' '.join(word.title() for word in book.split()) for book in suggested_books]
+    return RedirectResponse(url=f"/show_books/?suggested_books={','.join(suggested_books)}", status_code=303)
+
+
+
+@app.get("/show_books/")
+def show_books(suggested_books: str):
+    suggested_books_list = suggested_books.split(',')
+        
+    return {"suggested_books": suggested_books_list}
+
+    
+    
 
 
 
