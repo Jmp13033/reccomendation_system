@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/styles.css">
+    <title>Document</title>
+</head>
+
+<body>
+
+
+    <nav>
+        <a href="">Home</a>
+    </nav>
+
+    <div class="container">
+        <p class="welcome">
+            Wlcome to the Reccomendation system {{user.name}}!!
+        </p>
+    </div>
+
+    <form action="/submit_books" method="POST">
+        <label for="books">Enter your books</label><br>
+        <input type="text" id="books" name="books"><br><br>
+        <input type="submit" value="Submit">
+    </form>
+
+</body>
+
+
+</html>
