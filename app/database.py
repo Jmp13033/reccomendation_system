@@ -19,6 +19,9 @@ class User(Base):
  name = Column(String, index=True)
  email = Column(String, unique=True, index=True)
  is_active = Column(Boolean, default=True)
+
+
+# create the table 
 Base.metadata.create_all(bind=engine)
 
 

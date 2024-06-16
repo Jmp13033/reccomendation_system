@@ -3,3 +3,4 @@ database
 final_df.csv
 csv
 __pycache__
+.env

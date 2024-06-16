@@ -16,3 +16,15 @@ class UserResponse(BaseModel):
 
     class Config:
         from_attributes = True
+
+
+
+class Book(BaseModel):
+    title: str
+
+
+class BookRequest(BaseModel):
+    title: str
+    
+    class Config:
+        from_attributes = True
