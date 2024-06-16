@@ -19,10 +19,12 @@ class UserResponse(BaseModel):
 
 
 
+
+# book model
 class Book(BaseModel):
     title: str
 
-
+# Request book in case we need it
 class BookRequest(BaseModel):
     title: str
     

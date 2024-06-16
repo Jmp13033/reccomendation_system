@@ -13,6 +13,9 @@ from dotenv import load_dotenv , find_dotenv
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 import pickle
+
+from helpers.reccomender import books_recommendation
+
 # load the enviornment variables
 load_dotenv(find_dotenv())
 
@@ -21,15 +24,17 @@ with open("nearest_neighbors_model.pkl", "rb") as file:
 
 
 
+
+
 # instantiate FastAPI
 app = FastAPI()
 templates = Jinja2Templates(directory="templates")
 app.mount("/static", StaticFiles(directory="static"), name="static")
+
 # this goes
 @app.get("/", response_class=HTMLResponse)
 def home(requests: Request):
     return templates.TemplateResponse("home.html", {"request": requests})
-
 
 # the request gets processed and thrown around...
 @app.post("/users/", response_class=HTMLResponse)
@@ -56,7 +61,20 @@ def user_home(request: Request, email: str, db: Session = Depends(get_db)):
     return templates.TemplateResponse("user_home.html", {"request": request, "user": user})
 
 
+@app.post("/submit_books")
+def submit_books(request:Request, books:str=Form(...)):
+    books = []
+    
+    
 
+
+
+
+
+
+
+
+"""
 #--------------------------
 # get all the users
 @app.get("/users/", response_model=List[UserResponse])
@@ -74,8 +92,6 @@ def read_user(user_id: int, db: Session = Depends(get_db)):
     if user is None:
         raise HTTPException(status_code=404, detail="User not found")
     return user
-
-
 
 # delete a user 
 @app.delete("/users/{user_id}")
@@ -101,4 +117,4 @@ def update_user(user_id: int, user_data: UserCreate, db: Session = Depends(get_d
     db.refresh(db_user)
     return db_user
 
-
+"""
