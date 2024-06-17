@@ -9,8 +9,6 @@ books = pd.read_csv("C:\\Users\\JaredPeck\\Documents\\reccomendation_system\\app
 final_ratings = pd.read_csv("C:\\Users\\JaredPeck\\Documents\\reccomendation_system\\app\\csv\\final_rating_df.csv")
 import re
 
-
-
 def load_pivot():
     global final_ratings
     final_ratings = final_ratings.drop("Unnamed: 0", axis= 1)

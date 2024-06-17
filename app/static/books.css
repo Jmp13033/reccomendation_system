@@ -23,3 +23,10 @@ body {
     margin: 0;
     font-size: 18px;
 }
+.book a {
+    text-decoration: none;
+    color: black;
+}
+.book a:hover {
+    text-decoration: underline;
+}

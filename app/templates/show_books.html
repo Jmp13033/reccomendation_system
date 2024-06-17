@@ -11,10 +11,9 @@
         <h1>Suggested Books</h1>
         {% for book in suggested_books %}
             <div class="book">
-                <h2>{{ book }}</h2>
+                <h2><a href="/book/{{ book }}">{{ book }}</a></h2>
             </div>
         {% endfor %}
-    </div>
+
 </body>
 </html>
-

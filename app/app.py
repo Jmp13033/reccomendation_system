@@ -68,7 +68,7 @@ def user_home(request: Request, email: str, db: Session = Depends(get_db)):
 @app.post("/submit_books/", response_class=HTMLResponse)
 def submit(request: Request, books: str = Form(...)):
     user_liked_books = re.split(r',\s*(?=[^)]*(?:\(|$))', books)
-    user_liked_books = [book.lower() for book in user_liked_books]
+    user_liked_books = [book.strip().lower() for book in user_liked_books]
     suggested_books = books_recommendation(user_liked_books, model, book_pivot, 9)
     suggested_books = [' '.join(word.title() for word in book.split()) for book in suggested_books]
     return RedirectResponse(url=f"/show_books/?suggested_books={','.join(suggested_books)}", status_code=303)
@@ -81,8 +81,13 @@ def show_books(request: Request, suggested_books: str):
 
     return templates.TemplateResponse("show_books.html", {"request": request, "suggested_books": suggested_books_list})
 
+
+
+@app.get("/book/{book_name}", response_class=HTMLResponse)
+def book_detail(request: Request, book_name: str):
+    return templates.TemplateResponse("book_detail.html", {"request": request, "book": book_name})
     
-    
+
 
 
 
