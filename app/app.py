@@ -26,10 +26,6 @@ with open("nearest_neighbors_model.pkl", "rb") as file:
     model = pickle.load(file)
 
 
-
-
-
-
 # instantiate FastAPI
 app = FastAPI()
 templates = Jinja2Templates(directory="templates")
@@ -85,6 +81,8 @@ def show_books(request: Request, suggested_books: str):
 
 @app.get("/book/{book_name}", response_class=HTMLResponse)
 def book_detail(request: Request, book_name: str):
+    
+
     return templates.TemplateResponse("book_detail.html", {"request": request, "book": book_name})
     
 
