@@ -7,13 +7,22 @@
     <title>Document</title>
 </head>
 <body>
+
     <div class="container">
         <h1>Suggested Books</h1>
+        <h2>User Liked Books</h2>
+        <ul>
+            {% for book in user_liked_books %}
+                <h2><li>{{ book }}</li></h2>
+            {% endfor %}
+        </ul>
+        <h2>Recommendations</h2>
         {% for book in suggested_books %}
             <div class="book">
-                <h2><a href="/book/{{ book }}">{{ book }}</a></h2>
+                <h2><a href="/book/{{ book }}?suggested_books={{ suggested_books|join(',') }}&user_liked_books={{ user_liked_books|join(',') }}">{{ book }}</a></h2>
             </div>
         {% endfor %}
+    </div>
 
 </body>
 </html>

@@ -1,8 +1,9 @@
 from fastapi import FastAPI, Form, Request
+import os
 from typing import Annotated
 import re
 from typing import List
-from database import User
+from database import User, Books
 from database import SessionLocal, engine
 from fastapi.responses import HTMLResponse,  RedirectResponse
 from helpers.helpers import get_db
@@ -15,15 +16,18 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 import pickle
 from helpers.reccomender import books_recommendation, load_pivot
+import openai
+
 # load the enviornment variables
 load_dotenv(find_dotenv())
+openai.api_key = os.getenv("OPENAI_API_KEY")
+
 
 book_pivot = load_pivot()
 
-
-
 with open("nearest_neighbors_model.pkl", "rb") as file:
     model = pickle.load(file)
+
 
 
 # instantiate FastAPI
@@ -60,31 +64,58 @@ def user_home(request: Request, email: str, db: Session = Depends(get_db)):
     user = db.query(User).filter(User.email == email).first()
     return templates.TemplateResponse("user_home.html", {"request": request, "user": user})
 
+
 # submit the book to show reccomendations
 @app.post("/submit_books/", response_class=HTMLResponse)
 def submit(request: Request, books: str = Form(...)):
     user_liked_books = re.split(r',\s*(?=[^)]*(?:\(|$))', books)
     user_liked_books = [book.strip().lower() for book in user_liked_books]
+    user_liked_books_str = ','.join(user_liked_books)
+    user_liked_books_str = user_liked_books_str.capitalize()
     suggested_books = books_recommendation(user_liked_books, model, book_pivot, 9)
     suggested_books = [' '.join(word.title() for word in book.split()) for book in suggested_books]
-    return RedirectResponse(url=f"/show_books/?suggested_books={','.join(suggested_books)}", status_code=303)
+    suggested_books_str = ','.join(suggested_books)
+    return RedirectResponse(url=f"/show_books/?suggested_books={suggested_books_str}&user_liked_books={user_liked_books_str}", status_code=303)
 
 
 
 @app.get("/show_books/", response_class=HTMLResponse)
-def show_books(request: Request, suggested_books: str):
+def show_books(request: Request, suggested_books: str, user_liked_books:str):
+    user_liked_books_list = user_liked_books.split(",")
     suggested_books_list = suggested_books.split(',')
+    print(suggested_books_list)
+    return templates.TemplateResponse("show_books.html", {"request": request, "suggested_books": suggested_books_list, "user_liked_books": user_liked_books_list})
 
-    return templates.TemplateResponse("show_books.html", {"request": request, "suggested_books": suggested_books_list})
 
 
+# Initialize chat log for conversation context
+chat_log = []
 
 @app.get("/book/{book_name}", response_class=HTMLResponse)
-def book_detail(request: Request, book_name: str):
-    
+async def book_detail(request: Request, book_name: str, suggested_books: str = "", user_liked_books: str = ""):
+    suggested_books_list = suggested_books.split(',') if suggested_books else []
+    user_liked_books_list = user_liked_books.split(',') if user_liked_books else []
 
-    return templates.TemplateResponse("book_detail.html", {"request": request, "book": book_name})
+
+    chat_log.append({"role": "user", "content": f"Tell me about the book {book_name}."})
+    response = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo",
+        messages=chat_log,
+        temperature=0
+    )
     
+    bot_response = response['choices'][0]['message']['content']
+    chat_log.append({"role": "assistant", "content": bot_response})
+
+
+    return templates.TemplateResponse("book_detail.html", {
+        "request": request,
+        "book": book_name,
+        "bot_response": bot_response,
+        "suggested_books": suggested_books_list,
+        "user_liked_books": user_liked_books_list
+    })
+
 
 
 

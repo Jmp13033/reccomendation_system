@@ -17,8 +17,6 @@ def load_pivot():
     
     return book_pivot
     
-
-
 def clean_book_titles(book_list):
     cleaned_books = []
     for book in book_list:

@@ -20,10 +20,11 @@ class User(Base):
  email = Column(String, unique=True, index=True)
  is_active = Column(Boolean, default=True)
 
+
 class Books(Base):
     __tablename__ = "book"
-    id = Column(Integer, primary_key=True, index=True)
-    name = Column(String, index=True)
+    book_id = Column(Integer, primary_key=True, index=True)
+    title = Column(String, index=True)
     image_url = Column(String)
 
 # create the table 
