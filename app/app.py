@@ -64,7 +64,6 @@ def user_home(request: Request, email: str, db: Session = Depends(get_db)):
     user = db.query(User).filter(User.email == email).first()
     return templates.TemplateResponse("user_home.html", {"request": request, "user": user})
 
-
 # submit the book to show reccomendations
 @app.post("/submit_books/", response_class=HTMLResponse)
 def submit(request: Request, books: str = Form(...)):
@@ -103,6 +102,7 @@ async def book_detail(request: Request, book_name: str, suggested_books: str = "
         messages=chat_log,
         temperature=0
     )
+    
     
     bot_response = response['choices'][0]['message']['content']
     chat_log.append({"role": "assistant", "content": bot_response})
